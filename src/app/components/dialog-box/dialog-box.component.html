@@ -1,0 +1,19 @@
+<form [formGroup]="myForm" (ngSubmit)="onSubmit()" class="example-form">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name"> 
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Age</mat-label>
+      <input matInput formControlName="age"> 
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Facts</mat-label>
+        <input matInput formControlName="facts"> 
+      </mat-form-field>
+    
+    <button mat-stroked-button>Ok</button>
+    <button mat-stroked-button (click)="onNoClick()">Cancel</button>
+  </form>
+  
