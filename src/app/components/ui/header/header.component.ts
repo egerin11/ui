@@ -3,6 +3,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CatAndFactService } from 'src/app/services/cat-and-fact.service';
 import { DialogBoxComponent } from '../../dialog-box/dialog-box.component';
+import { Cat } from 'src/app/model/cat';
 
 @Component({
   selector: 'app-header',
@@ -12,21 +13,26 @@ import { DialogBoxComponent } from '../../dialog-box/dialog-box.component';
 export class HeaderComponent {
 
   constructor(private router: Router,
-    public dialog: MatDialog) {}
+    public dialog: MatDialog,
+    private catSevice:CatAndFactService) {}
 
   goToHome() {
     this.router.navigate(['/']);
   }
 
+postCat(cat:Cat){
+  return this.catSevice.postCat(cat).subscribe((data)=>{this.catSevice.setNewCat(data);});
+}
+
   openDialog(): void {
     let dialogConfig=new MatDialogConfig();
-    dialogConfig.width='300px';
+    dialogConfig.width='400px';
     dialogConfig.disableClose = true;
     const dialogRef = this.dialog.open(DialogBoxComponent ,dialogConfig);
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      // this.animal = result;
+    dialogRef.afterClosed().subscribe((data) => {this.postCat(data)
+
+    
     });
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { Cat } from 'src/app/model/cat';
 import { CatAndFactService } from 'src/app/services/cat-and-fact.service';
 
@@ -11,10 +11,22 @@ import { CatAndFactService } from 'src/app/services/cat-and-fact.service';
 export class GetAllCatsComponent implements OnInit {
   cats: Cat[] = [];
   catSubscription: Subscription;
+  private unsubscribe$ = new Subject<void>();
   constructor(private catService: CatAndFactService) { }
-
   ngOnInit(): void {
-    this.catSubscription = this.catService.getCats().subscribe((data) => { this.cats = data; })
+    this.catSubscription = this.catService.newCat$
+      .pipe(
+        switchMap((newCat) => {
+          if (newCat) {
+            this.cats.push(newCat);
+          }
+          return this.catService.getCats();
+        }),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((data) => {
+        this.cats = data;
+      });
   }
 
 ngOnDestroy(): void {
